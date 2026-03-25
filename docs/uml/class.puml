@@ -1,0 +1,86 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class IndexPage <<boundary>> {
+  +loginName : text input
+  +loginPassword : password input
+  +loginButton : button
+  +loginResult : span
+}
+
+class ColorPage <<boundary>> {
+  +searchText : text input
+  +colorText : text input
+  +searchColorButton : button
+  +addColorButton : button
+  +logoutButton : button
+  +colorSearchResult : span
+  +colorAddResult : span
+  +colorList : paragraph
+}
+
+class CodeJS <<control>> {
+  -urlBase : string
+  -extension : string
+  -userId : int
+  -firstName : string
+  -lastName : string
+  +doLogin()
+  +saveCookie()
+  +readCookie()
+  +doLogout()
+  +addColor()
+  +searchColor()
+}
+
+class LoginAPI <<control>> {
+  +getRequestInfo()
+  +returnWithInfo(firstName, lastName, id)
+  +returnWithError(err)
+}
+
+class AddColorAPI <<control>> {
+  +getRequestInfo()
+  +returnWithError(err)
+}
+
+class SearchColorsAPI <<control>> {
+  +getRequestInfo()
+  +returnWithInfo(searchResults)
+  +returnWithError(err)
+}
+
+class User <<entity>> {
+  +ID : int
+  +firstName : string
+  +lastName : string
+  +Login : string
+  +Password : string
+}
+
+class Color <<entity>> {
+  +UserId : int
+  +Name : string
+}
+
+class BrowserCookie <<entity>> {
+  +firstName : string
+  +lastName : string
+  +userId : int
+  +expires : datetime
+}
+
+IndexPage ..> CodeJS : uses doLogin()
+ColorPage ..> CodeJS : uses readCookie(),\nsearchColor(), addColor(), doLogout()
+
+CodeJS ..> BrowserCookie : creates/reads/clears
+CodeJS ..> LoginAPI : POST /Login.php
+CodeJS ..> AddColorAPI : POST /AddColor.php
+CodeJS ..> SearchColorsAPI : POST /SearchColors.php
+
+LoginAPI ..> User : SELECT by Login, Password
+AddColorAPI ..> Color : INSERT(UserId, Name)
+SearchColorsAPI ..> Color : SELECT Name by search + userId
+
+User "1" <-- "0..*" Color : owns
+@enduml

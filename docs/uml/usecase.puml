@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor User
+
+rectangle "COLORS Web Application" {
+  usecase "Log In" as UC_Login
+  usecase "Search Color" as UC_Search
+  usecase "Add Color" as UC_Add
+  usecase "Log Out" as UC_Logout
+  usecase "Validate Session\n(read cookie)" as UC_Session
+}
+
+User --> UC_Login
+User --> UC_Search
+User --> UC_Add
+User --> UC_Logout
+
+UC_Search .> UC_Session : <<include>>
+UC_Add .> UC_Session : <<include>>
+UC_Logout .> UC_Session : <<include>>
+
+note right of UC_Login
+User enters username and password.
+System authenticates with Login.php.
+On success, system stores cookie and
+redirects to color.html.
+end note
+
+note right of UC_Session
+color.html calls readCookie() on load.
+If cookie is invalid/missing,
+user is redirected to index.html.
+end note
+@enduml
