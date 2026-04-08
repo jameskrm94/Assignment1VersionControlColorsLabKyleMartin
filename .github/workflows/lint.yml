@@ -1,0 +1,39 @@
+name: Lint Colors App
+
+on:
+  push:
+    branches:
+      - main
+      - NewBranch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: colors-lamp
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run HTML lint
+        run: npm run lint:html
+
+      - name: Run CSS lint
+        run: npm run lint:css
+
+      - name: Run JavaScript lint
+        run: npm run lint:js
