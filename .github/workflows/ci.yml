@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Run automated tests
+        run: npm test
+
+      - name: Install Colors LAMP dependencies
+        working-directory: colors-lamp
+        run: npm ci
+
+      - name: Run Colors LAMP lint checks
+        working-directory: colors-lamp
+        run: npm run lint
